@@ -1,0 +1,32 @@
+{% if not error %}
+
+    {% if user %}
+
+        You are logged in as {{ user.email }}.<br />
+
+        <br />
+
+        <button data-request="onLogout">Logout</button>
+
+    {% else %}
+
+        {{ form_ajax('onRequestLogin') }}
+
+        <div id="passwordless-login-form">
+            {{ errors.first('email') }}<br />
+            <br />
+            <input class="form-control" placeholder="Your email goes here" type="email" name="email" style="width: 80%;" />
+            <br />
+            <br />
+            <button type="submit" class="btn">Email me a link to sign in</button>
+        </div>
+
+        {{ form_close() }}
+
+    {% endif %}
+
+{% else %}
+
+    <p>{{ error }}</p>
+
+{% endif %}
