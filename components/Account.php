@@ -250,6 +250,7 @@ class Account extends ComponentBase
             $this->property('mail_template'),
             compact('base_url', 'authentication_url'),
             function ($message) use ($email) {
+                $message->subject('Your login');
                 $message->to($email);
             }
         );
