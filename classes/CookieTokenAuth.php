@@ -50,16 +50,18 @@ class CookieTokenAuth
      */
     public function handle($request, Closure $next)
     {
-        try {
-            if (! $token = Cookie::get(self::COOKIE_NAME)) {
-                throw new ApplicationException('No token provided');
+        return app(\Illuminate\Cookie\Middleware\EncryptCookies::class)->handle($request, function ($request) use ($next) {
+            try {
+                if (! $token = Cookie::get(self::COOKIE_NAME)) {
+                    throw new ApplicationException('No token provided');
+                }
+                Token::parse($token, false, 'auth');
+            } catch(ApplicationException $e) {
+                return response('Unauthorized. ' . $e->getMessage(), 401);
             }
-            Token::parse($token, false, 'auth');
-        } catch(ApplicationException $e) {
-            return response('Unauthorized. ' . $e->getMessage(), 401);
-        }
 
-        return $next($request);
+            return $next($request);
+        });
     }
 
 }
