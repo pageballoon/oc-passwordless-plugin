@@ -76,6 +76,12 @@ class Account extends ComponentBase
                 'description' => 'If disabled, only existing users can request a login',
                 'type' => 'checkbox',
                 'default' => 0
+            ],
+            'api' => [
+                'title' => 'Enable API',
+                'description' => 'Component will expose API endpoint \'?api\' to query the authentication status',
+                'type' => 'checkbox',
+                'default' => 0
             ]
         ];
     }
@@ -104,6 +110,10 @@ class Account extends ComponentBase
     }
 
     public function onRun() {
+        if ($response = $this->api()) {
+            return $response;
+        }
+
         if ($response = $this->login()) {
             return $response;
         }
@@ -167,6 +177,41 @@ class Account extends ComponentBase
         return $this->auth::getUser();
     }
 
+
+    //
+    // API
+    //
+
+    public function api() {
+        if (! $this->property('api')) {
+            return false;
+        }
+
+        if (! $query = Input::get('api')) {
+            return false;
+        }
+
+        if (! $this->auth::check()) {
+            return response('Unauthorized. ', 401);
+        }
+
+        switch ($query) {
+            case 'info':
+                return $this->apiInfo();
+                break;
+            default:
+                return false;
+        }
+    }
+
+    public function apiInfo() {
+        $user = $this->auth::getUser();
+
+        return Response::json([
+            'data' => $user
+        ]);
+    }
+
     //
     // Ajax
     //
@@ -198,12 +243,15 @@ class Account extends ComponentBase
         $token = Token::generate($user, 30, 'login');
         $base_url = $this->currentPageUrl();
         $authentication_url = $base_url . '?token=' . $token;
+        $email = $user->email;
 
         // Send invitation email
-        Mail::sendTo(
-            $user->email,
+        Mail::queue(
             $this->property('mail_template'),
-            compact('base_url', 'authentication_url')
+            compact('base_url', 'authentication_url'),
+            function ($message) use ($email) {
+                $message->to($email);
+            }
         );
 
         return ['#passwordless-login-form' => $this->renderPartial('@invited', compact('base_url'))];
