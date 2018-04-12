@@ -1,6 +1,6 @@
 plugin:
     name: 'nocio.passwordless::lang.plugin.name'
     description: 'nocio.passwordless::lang.plugin.description'
-    author: Nocio
+    author: 'noc.io'
     icon: oc-icon-key
-    homepage: 'http://noc.io'
+    homepage: 'https://github.com/nocio/oc-passwordless-plugin'
