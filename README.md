@@ -72,6 +72,15 @@ The Account manager can process ``GET`` redirect requests after login, e.g. ``?r
 
 If enabled, the Account component exposes and JSON API endpoint that can be consumed by an authenticated user (unauthenticated users will face an 401 Unauthorized. response). Currently, the only route is ``?api=info`` which returns the jsonified user model.
 
+### Developer API
+
+The plugin provides a token model ``Nocio\Passwordless\Models\Token`` that can be re-used by developers to implement token management. The model provides two main functions:
+
+- ``generate($user, $expires = 10, $scope = 'default')`` which returns a token for a given ``$user`` model object (or more general the token payload). Make sure to specificy a custom scope, e.g. `myplugin` to avoid scope collision.
+- ``parse($raw_token, $delete = false, $scope = null)`` which parses (and optionally ``$delete``s) a provided ``$raw_token`` in a given ``$scope`` and returns the correspoding ``$user`` model. It raises an ``ApplicationException`` if the token is expired, invalid or cannot be parsed.
+
+More details can be found in the [model class documentation](https://github.com/nocio/oc-passwordless-plugin/blob/master/models/Token.php).
+
 ### Support & Contribution
 
 I can only offer limited support but will try to answer questions and feature requests on [GitHub](https://github.com/nocio/oc-passwordless-plugin). I am also happy to accept pull requests, especially for the missing features list on the Plugin details page.
