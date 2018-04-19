@@ -18,7 +18,14 @@ class CookieTokenAuth
      */
     public static function login($user, $expires = 43200) {
         $token = Token::generate($user, $expires, 'auth');
-        Cookie::queue(self::COOKIE_NAME, $token, $expires);
+        Cookie::queue(
+		self::COOKIE_NAME, 
+		$token, 
+		$expires,
+		'/', '',
+		env('COOKIE_TOKEN_SECURE', true) ? true : false, // secure
+            	true // httpOnly
+	);
     }
 
     public static function check() {
