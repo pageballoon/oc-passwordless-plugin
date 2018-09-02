@@ -74,6 +74,8 @@ class Token extends Model
      * @return Authenticated user object
      */
     public static function parse($raw_token, $delete = false, $scope = null) {
+        // unserialize if serialized
+        $raw_token = @unserialize($raw_token) === false ? $raw_token : unserialize($raw_token);
 
         list($identifier, $token) = explode('-', $raw_token);
 
