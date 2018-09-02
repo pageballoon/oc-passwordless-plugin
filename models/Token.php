@@ -75,9 +75,14 @@ class Token extends Model
      */
     public static function parse($raw_token, $delete = false, $scope = null) {
         // unserialize if serialized
-        $raw_token = @unserialize($raw_token) === false ? $raw_token : unserialize($raw_token);
+        $unserialized_token = @unserialize($raw_token, ["allowed_classes" => false]);
+        if ($unserialized_token === false) {
+            $unserialized_token = $raw_token;
+        }
+        // ensure correct format
+        $clean_token = preg_replace("/[^A-Za-z0-9\- ]/", '', $unserialized_token);
 
-        list($identifier, $token) = explode('-', $raw_token);
+        list($identifier, $token) = explode('-', $clean_token);
 
         if (!$login_token = self::lookup($identifier)->scope($scope)->valid()->first()) {
             throw new ApplicationException('Token expired or not existent. Try to login again.');
