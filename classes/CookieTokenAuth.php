@@ -4,6 +4,7 @@ namespace Nocio\Passwordless\Classes;
 
 use Cookie;
 use Closure;
+use Response;
 use Nocio\Passwordless\Models\Token;
 use October\Rain\Exception\ApplicationException;
 
@@ -19,13 +20,13 @@ class CookieTokenAuth
     public static function login($user, $expires = 43200) {
         $token = Token::generate($user, $expires, 'auth');
         Cookie::queue(
-		self::COOKIE_NAME, 
-		$token, 
-		$expires,
-		'/', '',
-		env('COOKIE_TOKEN_SECURE', true) ? true : false, // secure
-            	true // httpOnly
-	);
+            self::COOKIE_NAME,
+            $token,
+            $expires,
+            '/', '',
+            env('COOKIE_TOKEN_SECURE', true) ? true : false, // secure
+            true // httpOnly
+        );
     }
 
     public static function check() {
@@ -64,7 +65,13 @@ class CookieTokenAuth
                 }
                 Token::parse($token, false, 'auth');
             } catch(ApplicationException $e) {
-                return response('Unauthorized. ' . $e->getMessage(), 401);
+                $message = 'Unauthorized. ' . $e->getMessage();
+
+                if ($request->wantsJson()) {
+                    return Response::json(['message' => $message], 401);
+                }
+
+                return response($message, 401);
             }
 
             return $next($request);

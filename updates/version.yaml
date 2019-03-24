@@ -4,3 +4,4 @@
     - 'Create tokens table'
     - create_tokens_table.php
 1.0.3: Unserialize token before parsing to ensure compatibility with Cookie::get()
+1.0.4: Lets CookieTokenAuth middleware return JSON if requested
