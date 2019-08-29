@@ -46,7 +46,11 @@ class CookieTokenAuth
     }
 
     public static function logout() {
-        Cookie::queue(Cookie::forget(self::COOKIE_NAME));
+        if ($token = Cookie::get(self::COOKIE_NAME)) {
+            // invalidate token
+            Token::parse($token, true, 'auth');
+            Cookie::queue(Cookie::forget(self::COOKIE_NAME));
+        }
     }
 
     /**

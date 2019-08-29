@@ -1,0 +1,13 @@
+extend type Query {
+    """Returns authorized user or null if unauthorized"""
+    passwordlessUser: User @component(alias: "__SELF__")
+}
+
+extend type Mutation {
+    """Triggers logout of authenticated user and returns user object on success"""
+    passwordlessLogout: User @component(alias: "__SELF__")
+    """Requests a passwordless login. Returns status code 0 on success, 1 if email is invalid or 2 if email is not registered"""
+    passwordlessLoginRequest(email: String!, endpoint: String!): Int! @component(alias: "__SELF__")
+    """Sign-in request based on email token. Returns the authorized user or null on failure"""
+    passwordlessLogin(token: String!): User @component(alias: "__SELF__")
+}

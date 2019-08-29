@@ -82,6 +82,10 @@ class Token extends Model
         // ensure correct format
         $clean_token = preg_replace("/[^A-Za-z0-9\- ]/", '', $unserialized_token);
 
+        if (strpos($clean_token, '-') === false) {
+            throw new ApplicationException('Male formed token' . $clean_token);
+        }
+
         list($identifier, $token) = explode('-', $clean_token);
 
         if (!$login_token = self::lookup($identifier)->scope($scope)->valid()->first()) {
