@@ -1,4 +1,4 @@
-<?php namespace nocio\Captu\Updates;
+<?php namespace Nocio\Passwordless\Updates;
 
 use Schema;
 use October\Rain\Database\Updates\Migration;
