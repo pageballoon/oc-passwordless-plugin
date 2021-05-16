@@ -239,6 +239,7 @@ class Account extends ComponentBase
      * @return array October AJAX response
      */
     public function onRequestLogin() {
+        $base_url = $this->currentPageUrl();
 
         // Validate the email
         $email = ['email' => Input::get('email')];
@@ -247,16 +248,17 @@ class Account extends ComponentBase
             return Redirect::to($this->currentPageUrl())->withErrors($validator);
         }
 
+        
         // Get user
         if (! $user = $this->model::where($email)->first()) {
             if ($this->property('allow_registration')) {
                 $user = $this->model::create($email);
             } else {
-                return Response::json('Sorry, this email is not registered.', 403);
+                return ['#passwordless-login-form' => $this->renderPartial('@invited', compact('base_url'))];
             }
         }
 
-        $base_url = $this->currentPageUrl();
+        
         $this->sendLoginEmail($user, $base_url);
 
         return ['#passwordless-login-form' => $this->renderPartial('@invited', compact('base_url'))];
