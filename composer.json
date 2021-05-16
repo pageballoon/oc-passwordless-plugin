@@ -1,5 +1,5 @@
 {
-  "name": "nocio/oc-passwordless-plugin",
+  "name": "nocio/passwordless-plugin",
   "type": "october-plugin",
   "description": "Passwordless frontend login.",
   "keywords": [
