@@ -1,0 +1,25 @@
+{
+  "name": "nocio/oc-passwordless-plugin",
+  "type": "october-plugin",
+  "description": "Passwordless frontend login.",
+  "keywords": [
+    "user",
+    "login",
+    "passwordless",
+    "password"
+  ],
+  "homepage": "https://octobercms.com/plugin/nocio-passwordless",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Nocio",
+      "role": "Author",
+      "homepage": "https://github.com/nocio"
+    }
+  ],
+  "require": {
+    "php": ">=7.0",
+    "composer/installers": "~1.0",
+    "rainlab/user-plugin": "dev-master"
+  }
+}
