@@ -10,3 +10,4 @@
 1.0.7: Handles male-formed token and inactive user exceptions
 1.0.8: GraphQL support (requires Headstart plugin)
 1.0.9: Prevent user from knowing whether entered email exists (thanks to @helmutkaufmann)
+1.0.10: Bump Rainlab.User dependency
