@@ -230,6 +230,21 @@ class Account extends ComponentBase
         ]);
     }
 
+    /**
+     * Returns a random string
+     */
+    public function generateRandomString($length = 64, $keyspace = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ') {
+        if ($length < 1) {
+            throw new \RangeException("Length must be a positive integer");
+        }
+        $pieces = [];
+        $max = mb_strlen($keyspace, '8bit') - 1;
+        for ($i = 0; $i < $length; ++$i) {
+            $pieces []= $keyspace[random_int(0, $max)];
+        }
+        return implode('', $pieces);
+    }
+
     //
     // Ajax
     //
@@ -248,17 +263,33 @@ class Account extends ComponentBase
             return Redirect::to($this->currentPageUrl())->withErrors($validator);
         }
 
-        
+
         // Get user
         if (! $user = $this->model::where($email)->first()) {
             if ($this->property('allow_registration')) {
-                $user = $this->model::create($email);
+                // $user = $this->model::create($email);
+
+                $random_string = $this->generateRandomString();
+                /*
+                $user = $this->auth::register([
+                    'email' => Input::get('email'),
+                    'password' => $random_string,
+                    'password_confirmation' => $random_string,
+                ], true); // force auto activation
+                */
+                $user = $this->model::create([
+                  'email' => Input::get('email'),
+                  'password' => $random_string,
+                  'password_confirmation' => $random_string
+                ]);
+                $user->attemptActivation($user->activation_code);
+
             } else {
                 return ['#passwordless-login-form' => $this->renderPartial('@invited', compact('base_url'))];
             }
         }
 
-        
+
         $this->sendLoginEmail($user, $base_url);
 
         return ['#passwordless-login-form' => $this->renderPartial('@invited', compact('base_url'))];
