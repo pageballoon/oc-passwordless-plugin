@@ -253,8 +253,8 @@ class Account extends ComponentBase
         if (! $user = $this->model::where($email)->first()) {
             if ($this->property('allow_registration')) {
                 $random_string = str_random(20);
-                $user = $this->model::create([
-                  'email' => Input::get('email'),
+                $user = $this->model::create(
+                   $email + [
                   'password' => $random_string,
                   'password_confirmation' => $random_string
                 ]);
