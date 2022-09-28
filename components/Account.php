@@ -258,7 +258,6 @@ class Account extends ComponentBase
                   'password' => $random_string,
                   'password_confirmation' => $random_string
                 ]);
-                $user->attemptActivation($user->activation_code);
                 $page = $this->getPage();
                 Event::fire('passwordless.user.created', [$user, $page]);
             } else {
