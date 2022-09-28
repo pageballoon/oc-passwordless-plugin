@@ -13,6 +13,7 @@ use Redirect;
 use Validator;
 use Mail;
 use Response;
+use Event;
 
 class Account extends ComponentBase
 {
@@ -248,17 +249,23 @@ class Account extends ComponentBase
             return Redirect::to($this->currentPageUrl())->withErrors($validator);
         }
 
-        
         // Get user
         if (! $user = $this->model::where($email)->first()) {
             if ($this->property('allow_registration')) {
-                $user = $this->model::create($email);
+                $random_string = str_random(20);
+                $user = $this->model::create(
+                   $email + [
+                  'password' => $random_string,
+                  'password_confirmation' => $random_string
+                ]);
+                $page = $this->getPage();
+                Event::fire('passwordless.user.created', [$user, $page]);
             } else {
                 return ['#passwordless-login-form' => $this->renderPartial('@invited', compact('base_url'))];
             }
         }
 
-        
+
         $this->sendLoginEmail($user, $base_url);
 
         return ['#passwordless-login-form' => $this->renderPartial('@invited', compact('base_url'))];
