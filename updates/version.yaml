@@ -11,4 +11,5 @@
 1.0.8: GraphQL support (requires Headstart plugin)
 1.0.9: Prevent user from knowing whether entered email exists (thanks to @helmutkaufmann)
 1.0.10: Bump Rainlab.User dependency
-1.0.11: Random password and passwordless.user.created event on user creation (thanks to @hmassimomegistus)
+1.0.11: Random password and passwordless.user.created event on user creation (thanks to @massimomegistus)
+1.0.12: passwordless.user.beforeLoginEmail event (thanks to @massimomegistus)
