@@ -250,6 +250,7 @@ class Account extends ComponentBase
         }
 
         // Get user
+        $page = $this->getPage();
         if (! $user = $this->model::where($email)->first()) {
             if ($this->property('allow_registration')) {
                 $random_string = str_random(20);
@@ -258,14 +259,14 @@ class Account extends ComponentBase
                   'password' => $random_string,
                   'password_confirmation' => $random_string
                 ]);
-                $page = $this->getPage();
-                Event::fire('passwordless.user.created', [$user, $page]);
+                Event::fire('nocio.passwordless.user.created', [$user, $page]);
             } else {
                 return ['#passwordless-login-form' => $this->renderPartial('@invited', compact('base_url'))];
             }
         }
 
-
+        Event::fire('nocio.passwordless.user.beforeLoginEmail', [$user, $page]);
+        
         $this->sendLoginEmail($user, $base_url);
 
         return ['#passwordless-login-form' => $this->renderPartial('@invited', compact('base_url'))];
