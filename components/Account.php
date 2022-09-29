@@ -259,13 +259,14 @@ class Account extends ComponentBase
                   'password' => $random_string,
                   'password_confirmation' => $random_string
                 ]);
-                Event::fire('passwordless.user.created', [$user, $page]);
+                Event::fire('nocio.passwordless.user.created', [$user, $page]);
             } else {
                 return ['#passwordless-login-form' => $this->renderPartial('@invited', compact('base_url'))];
             }
         }
 
-        Event::fire('passwordless.user.beforeLoginEmail', [$user, $page]);
+        Event::fire('nocio.passwordless.user.beforeLoginEmail', [$user, $page]);
+        
         $this->sendLoginEmail($user, $base_url);
 
         return ['#passwordless-login-form' => $this->renderPartial('@invited', compact('base_url'))];
