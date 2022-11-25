@@ -8,6 +8,7 @@ use October\Rain\Exception\ApplicationException;
 use Nocio\Passwordless\Models\Token;
 use Cms\Classes\Page;
 use Input;
+use Config;
 use Cookie;
 use Redirect;
 use Validator;
@@ -240,7 +241,7 @@ class Account extends ComponentBase
      * @return array October AJAX response
      */
     public function onRequestLogin() {
-        $base_url = $this->currentPageUrl();
+        $base_url = $this->currentPageUrl() ?? Config::get('app.url');
 
         // Validate the email
         $email = ['email' => Input::get('email')];
